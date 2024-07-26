@@ -14,12 +14,29 @@ app.get("/", function (req, res) {
     });   
     })
 
+    app.get("/file/:filename", function (req, res) {
+        fs.readFile(`./files/${req.params.filename}`,"utf8",function(err,filedata){
+res.render('show',{filename:req.params.filename,filedata:filedata})
+        })
+        })
+
+        app.get("/edit/:filename", function (req, res) {
+           res.render('edit',{filename:req.params.filename})
+            })
+
     app.post("/create",function(req,res){
         fs.writeFile(`./files/${req.body.title.split(" ").join("")}.txt`,req.body.details ,function(err){
 res.redirect("/")
         })
     })
    
+
+    
+    app.post("/edit",function(req,res){
+       fs.rename(`./files/${req.body.previous}`,`./files/${req.body.new}`,function(err){
+        res.redirect("/")
+       })
+    })
 
 app.listen(3000, function () {
     console.log("Server is running on port 3000");
