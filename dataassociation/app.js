@@ -26,8 +26,10 @@ app.get("/login",(req,res)=>{
     res.render("login");
 })
 
-app.get("/profile",isLoggedIn,(req,res)=>{
-    res.render("profile");
+app.get("/profile",isLoggedIn, async (req,res)=>{
+ let user = await userModel.findOne({email:req.user.email})
+    res.render("profile",{user});
+
 })
 
 
@@ -101,7 +103,7 @@ app.post("/register", async (req, res) => {
     if (!user) return res.status(400).send("Something went wrong");
   
     bcrypt.compare(password,user.password ,  (err,result)=>{
-   if(true) res.status(200).send("User logged in successfully")
+   if(true) res.status(200).redirect("/profile")
 
     else res.redirect("/login")
     })
